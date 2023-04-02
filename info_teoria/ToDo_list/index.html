@@ -1,0 +1,56 @@
+<html>
+
+<head>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script type="text/javascript">
+
+
+
+        function addTask() {
+
+            let newItem = document.getElementById("new-item");
+            let addBtn = document.getElementById("button");
+            let itemList = document.getElementById("item-list");
+
+            let li = document.createElement("li");
+            let checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            let label = document.createElement("label");
+            label.innerText = newItem.value;
+            
+            li.appendChild(checkbox);
+            li.appendChild(label);
+            itemList.appendChild(li);
+            newItem.value = "";
+        };
+
+        
+
+        function clearAll() {
+
+            let btnDeleteAll = document.getElementById('clear-button');
+            let list = document.getElementById('item-list');
+
+            list.innerHTML="";
+        };
+
+    </script>
+
+</head>
+
+<body>
+
+    <div>
+        <input type="text" id="new-item" placeholder="Add a New Task">
+        <button id="button" onclick="addTask();"> add task </button><br>
+
+        <button id="clear-button" onclick="clearAll();"> clear all </button>
+        <ul id="item-list">
+        </ul>
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+
+div {
+
+    width: 700px;
+    height: 90%;
+    margin: auto;
+    background-color: lightblue;
+    padding: 10px 25px;
+    border-radius: 5%;
+     
+   
+}
+
+input[type=text]{ 
+    width: 60%; 
+    padding: 10px 15px; 
+    margin: 20px 0; 
+    border-radius: 5px;  
+}
+
+button{ 
+    padding: 10px 15px; 
+    background-color: #4CAF50; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    
+}
+
+ul{ 
+    list-style: none; 
+    margin: 0; 
+    padding: 0;
+     
+}
+
+li{ 
+    width: 700px;
+    padding: 10px; 
+    background-color: #f1f1f1; 
+    margin: 10px 0; 
+    border-radius: 5px; 
+    display: flex; 
+    align-items: center;
+
+  } 
+  
+li:hover{ 
+    background-color: #ddd; 
+}
+
