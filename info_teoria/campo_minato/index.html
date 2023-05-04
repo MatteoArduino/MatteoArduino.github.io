@@ -1,0 +1,89 @@
+<html>
+
+<head>
+    <title>campo minato</title>
+    <link rel="stylesheet" href="Styles.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <script>
+
+        class Cella {
+            constructor(mina) {
+                this.mina = mina;       //indica se nella cella è presente una mina
+                this.aperta = false;    //indica se la cella è stata aperta
+                this.cont = 0;          //indica quante mine limitrofe ha la cella
+                this.flag = false;      //indica se sulla cella è stata messa una bandierina
+            }
+        }
+
+        //impostazioni del campo
+        var n = 10;
+        var mine = 10;
+        var campo = [];
+        var cAperte = 0;
+        var gioco = true;
+
+        $(document).ready(function () {
+
+
+            //creazione delle celle
+            for (r = 0; r < n; r++) {
+
+                campo[r] = [];
+
+                for (c = 0; c < n; c++) {
+
+                    campo[r][c] = new Cella(false);
+                    $('#griglia').append('<div class="cella" data-row="' + r + '" data-col="' + c + '"></div>');
+                }
+
+            }
+
+            //assegnazione delle mine alle celle
+            for (let m = 0; m < mine; m++) {
+                let posRiga = Math.floor(Math.random() * n);
+                let posCol = Math.floor(Math.random() * n);
+
+                if (campo[posRiga][posCol].mina == false) {
+
+                    campo[posRiga][posCol].mina = true;
+
+                    //incremento del valore delle celle adiacenti
+                    for (let i = -1; i <= 1; i++) {
+                        for (let j = -1; i <= 1; j++) {
+                            let rigaAdiacente = posRiga + i;
+                            let colAdiacente = posCol + j;
+
+                            if (rigaAdiacente >= 0 && colAdiacente >= 0 && rigaAdiacente < n && colAdiacente < n) {
+                                campo[dr][dc].cont++;
+                            }
+                        }
+                    }
+                    m++;
+
+                }
+
+            }
+
+            
+
+
+
+
+
+        });
+
+
+    </script>
+</head>
+
+<body>
+
+    <br><br>
+    <div id="griglia">
+
+    </div>
+
+</body>
+
+</html>

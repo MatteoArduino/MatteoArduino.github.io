@@ -1,0 +1,47 @@
+#stato {
+	font-size: 32px;
+	text-align: center;
+	width: 600px;
+}
+
+#griglia {
+	width: 600px;
+	height: 600px;
+}
+
+.cella {
+    border: 4px outset #bbb;
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    background-color: #ccc;
+	text-align: center;
+	margin: 1px;
+	font-size: 32px;
+	vertical-align: middle;
+}
+
+.cella i {
+	position: absolute;
+	transform: translate(50%,-50%);
+	top: 50%;
+	right: 50%;
+}
+
+.cella:hover {
+	background-color: #aaa;
+}
+
+.aperta {
+	background-color: gray;
+}
+
+.colore-1 {color: blue;}
+.colore-2 {color: green;}
+.colore-3 {color: red;}
+.colore-4 {color: purple;}
+
+.mina {
+	background-color: rgb(255,0,0);
+	color: #000;
+}
