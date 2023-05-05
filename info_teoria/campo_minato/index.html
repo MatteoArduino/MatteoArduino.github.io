@@ -27,15 +27,18 @@
 
 
             //creazione delle celle
-            for (r = 0; r < n; r++) {
+            for (let r = 0; r < n; r++) {
 
                 campo[r] = [];
 
-                for (c = 0; c < n; c++) {
+                for (let c = 0; c < n; c++) {
 
                     campo[r][c] = new Cella(false);
                     $('#griglia').append('<div class="cella" data-row="' + r + '" data-col="' + c + '"></div>');
+
                 }
+                $('#griglia').append('<br>');
+
 
             }
 
@@ -46,32 +49,87 @@
 
                 if (campo[posRiga][posCol].mina == false) {
 
+
                     campo[posRiga][posCol].mina = true;
+
+
 
                     //incremento del valore delle celle adiacenti
                     for (let i = -1; i <= 1; i++) {
-                        for (let j = -1; i <= 1; j++) {
+
+                        for (let j = -1; j <= 1; j++) {
                             let rigaAdiacente = posRiga + i;
                             let colAdiacente = posCol + j;
 
                             if (rigaAdiacente >= 0 && colAdiacente >= 0 && rigaAdiacente < n && colAdiacente < n) {
-                                campo[dr][dc].cont++;
+                                campo[rigaAdiacente][colAdiacente].cont++;
                             }
                         }
                     }
-                    m++;
 
                 }
 
             }
 
-            
+            $('.cella').click(function () {
+                
+                var r = parseInt($(this).attr("data-row"));
+			    var c = parseInt($(this).attr("data-col"));
+
+                if(campo[r][c].mina==true)
+                {
+                    alert("hai perso");
+                    scopriMine();
+                    return;
+                }
+                
+                if(campo[r][c].aperta==false)
+                {
+                    campo[r][c].aperta = true;
+                    
+                    if(campo[r][c].cont>0)
+                    {
+                        $('.cella[data-row='+r+'][data-col='+c+']').html(campo[r][c].cont ? campo[r][c].cont : "&nbsp;");
+                        $('.cella[data-row='+r+'][data-col='+c+']').addClass("aperta");
+                        $('.cella[data-row='+r+'][data-col='+c+']').addClass("colore-" + (campo[r][c].cont<4?campo[r][c].cont:4));
+                    }
+                }
+                else if(campo[r][c].aperta==true)
+                {
+                    return
+                }
+
+            });
+
+
+
+
 
 
 
 
 
         });
+
+
+        function scopriMine() {
+
+            for (var r = 0; r < n; r++) {
+
+                for (var c = 0; c < n; c++) {
+
+                    if (campo[r][c].mina == true) {
+
+                        campo[r][c].aperta = true;
+                        $('.cella[data-row='+r+'][data-col='+c+']').html('<i class="fa fa-bomb"></i>')
+                        $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("mina");
+
+                    }
+                }
+
+            }
+
+        }
 
 
     </script>
@@ -83,7 +141,9 @@
     <div id="griglia">
 
     </div>
-    
+
+    <button onclick="scopriMine();">scopri</button>
+
     <a href="../finestra_teoria.html"><img src="../img/freccia.png" style="width:100px;height:100px;"></a>
 
 </body>
