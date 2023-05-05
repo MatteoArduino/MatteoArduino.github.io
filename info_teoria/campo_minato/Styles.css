@@ -5,8 +5,8 @@
 }
 
 #griglia {
-	width: 600px;
-	height: 600px;
+	width: auto;
+	height: auto;
 }
 
 .cella {
@@ -19,6 +19,7 @@
 	margin: 1px;
 	font-size: 32px;
 	vertical-align: middle;
+	position: relative;
 }
 
 .cella i {
