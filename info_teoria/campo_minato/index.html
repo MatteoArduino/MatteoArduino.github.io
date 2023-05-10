@@ -17,15 +17,14 @@
         }
 
         //impostazioni del campo
-        var n = 10;
-        var mine = 10;
-        var campo = [];
-        var cAperte = 0;
-        var gioco = true;
+        let n = 10;
+        let mine = 10;
+        let campo = [];
+        let cAperte = 0;
+        let gioco = true;
+        let bandiere = 0;
 
-        $(document).ready(function () {
-
-
+        function generaCampo() {
             //creazione delle celle
             for (let r = 0; r < n; r++) {
 
@@ -42,7 +41,7 @@
 
             }
 
-            //assegnazione delle mine alle celle
+            //assegnazione delle mine nel campo
             for (let m = 0; m < mine; m++) {
                 let posRiga = Math.floor(Math.random() * n);
                 let posCol = Math.floor(Math.random() * n);
@@ -70,66 +69,147 @@
                 }
 
             }
-
-            $('.cella').click(function () {
-                
-                var r = parseInt($(this).attr("data-row"));
-			    var c = parseInt($(this).attr("data-col"));
-
-                if(campo[r][c].mina==true)
-                {
-                    alert("hai perso");
-                    scopriMine();
-                    return;
-                }
-                
-                if(campo[r][c].aperta==false)
-                {
-                    campo[r][c].aperta = true;
-                    
-                    if(campo[r][c].cont>0)
-                    {
-                        $('.cella[data-row='+r+'][data-col='+c+']').html(campo[r][c].cont ? campo[r][c].cont : "&nbsp;");
-                        $('.cella[data-row='+r+'][data-col='+c+']').addClass("aperta");
-                        $('.cella[data-row='+r+'][data-col='+c+']').addClass("colore-" + (campo[r][c].cont<4?campo[r][c].cont:4));
-                    }
-                }
-                else if(campo[r][c].aperta==true)
-                {
-                    return
-                }
-
-            });
-
-
-
-
-
-
-
-
-
-        });
-
+        }
 
         function scopriMine() {
 
-            for (var r = 0; r < n; r++) {
+            for (let r = 0; r < n; r++) {
 
-                for (var c = 0; c < n; c++) {
+                for (let c = 0; c < n; c++) {
 
                     if (campo[r][c].mina == true) {
 
                         campo[r][c].aperta = true;
-                        $('.cella[data-row='+r+'][data-col='+c+']').html('<i class="fa fa-bomb"></i>')
+                        //$('.cella[data-row=' + r + '][data-col=' + c + ']').html('<i class="fa fa-bomb"></i>')
                         $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("mina");
 
                     }
                 }
 
             }
+            gioco = false;
 
         }
+
+        function controlla(r, c) {
+
+            if (campo[r][c].aperta == true) {
+                return true;
+            }
+
+            campo[r][c].aperta = true;
+            $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("aperta");
+            cAperte++;
+
+            if ((campo[r][c].mina == false) && (campo[r][c].cont == 0)) {
+
+                for (let dr = r - 1; dr <= r + 1; dr++) {
+                    for (let dc = c - 1; dc <= c + 1; dc++) {
+                        // Controllo se la cella adiacente è all'interno del campo di gioco
+                        if (dc >= 0 && dr >= 0 && dc < n && dr < n) {
+                            // Controllo se la cella adiacente non è stata ancora aperta
+                            if (campo[dr][dc].aperta == false) {
+
+                                // Richiamo la funzione controlla per aprire la cella adiacente e controllare i suoi vicini
+                                controlla(dr, dc);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if ((campo[r][c].mina == false) && (campo[r][c].cont > 0)) {
+                $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("aperta");
+
+                if (campo[r][c].cont > 0) {
+                    $('.cella[data-row=' + r + '][data-col=' + c + ']').html(campo[r][c].cont);
+
+                    $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("colore-" + (campo[r][c].cont < 4 ? campo[r][c].cont : 4));
+                }
+            }
+
+            if (campo[r][c].mina == true) {
+                gioco = false;
+                scopriMine();
+                alert("hai perso");
+            }
+
+        }
+
+
+        $(document).ready(function () {
+
+
+            generaCampo();
+
+
+            //quando clicco su una cella
+            $('.cella').click(function () {
+
+                if (gioco == true) {
+
+                    var r = parseInt($(this).attr("data-row"));
+                    var c = parseInt($(this).attr("data-col"));
+
+                    if ((gioco == true) && (campo[r][c].flag == false)) {
+
+
+                        controlla(r, c);
+
+                    }
+                }
+                else {
+                    alert("il gioco è terminato");
+                }
+
+
+            });
+
+
+            $('.cella').bind('contextmenu', function (e) {
+
+
+                e.preventDefault();
+                if (bandiere < mine) {
+
+
+                    
+                    var r = parseInt($(this).attr("data-row"));
+                    var c = parseInt($(this).attr("data-col"));
+
+                    if ((gioco == true) && (campo[r][c].aperta == false) && (campo[r][c].flag == false)) {
+
+                        bandiere++;
+                        campo[r][c].flag = true;
+                        $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("flag");
+
+                    }
+
+                    
+                }
+
+
+            });
+
+            $('.flag').bind('contextmenu', function (e) {
+
+                alert("ciao");
+                e.preventDefault();
+                var r = parseInt($(this).attr("data-row"));
+                var c = parseInt($(this).attr("data-col"));
+
+                campo[r][c].flag = false;
+                $('.cella[data-row=' + r + '][data-col=' + c + ']').removeClass("flag");
+                $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("cella");
+
+            });
+
+
+
+        });
+
+
+
 
 
     </script>
@@ -137,10 +217,10 @@
 
 <body>
 
-    <br><br>
-    <div id="griglia">
+    <br>
+    <h1>CAMPO MINATO</h1>
 
-    </div>
+    <div id="griglia"></div>
 
     <button onclick="scopriMine();">scopri</button>
 
