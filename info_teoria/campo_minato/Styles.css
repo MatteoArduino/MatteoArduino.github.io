@@ -54,13 +54,13 @@
 
 .mina {
 	
-	background-image: url("/img/mina.png");
+	background-image: url("../img/mina.png");
 	
 }
 
 .flag {
 
-	background-image: url("img/flag.png");
+	background-image: url("../img/flag.png");
 }
 
 
