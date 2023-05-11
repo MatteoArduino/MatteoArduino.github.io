@@ -1,15 +1,15 @@
 <html>
 
 <head>
-    <title>campo minato</title>
+    <title>CAMPO MINATO</title>
     <link rel="stylesheet" href="Styles.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
     <script>
 
         class Cella {
-            constructor(mina) {
-                this.mina = mina;       //indica se nella cella è presente una mina
+            constructor() {
+                this.mina = false;       //indica se nella cella è presente una mina
                 this.aperta = false;    //indica se la cella è stata aperta
                 this.cont = 0;          //indica quante mine limitrofe ha la cella
                 this.flag = false;      //indica se sulla cella è stata messa una bandierina
@@ -20,9 +20,21 @@
         let n = 10;
         let mine = 10;
         let campo = [];
-        let cAperte = 0;
+        let celleAperte = 0;
         let gioco = true;
         let bandiere = 0;
+
+        function aggiornaStat() {
+
+            document.getElementById("mine-left").innerHTML = "mine rimanenti: " + (mine - bandiere);
+        }
+
+        function restart() {
+
+            //aggiorna la pagina
+            window.location.reload(true);
+
+        }
 
         function generaCampo() {
             //creazione delle celle
@@ -32,7 +44,7 @@
 
                 for (let c = 0; c < n; c++) {
 
-                    campo[r][c] = new Cella(false);
+                    campo[r][c] = new Cella();
                     $('#griglia').append('<div class="cella" data-row="' + r + '" data-col="' + c + '"></div>');
 
                 }
@@ -60,7 +72,9 @@
                             let rigaAdiacente = posRiga + i;
                             let colAdiacente = posCol + j;
 
+                            //controlla che si all'interno del campo
                             if (rigaAdiacente >= 0 && colAdiacente >= 0 && rigaAdiacente < n && colAdiacente < n) {
+
                                 campo[rigaAdiacente][colAdiacente].cont++;
                             }
                         }
@@ -71,7 +85,7 @@
             }
         }
 
-        function scopriMine() {
+        function apriMine() {
 
             for (let r = 0; r < n; r++) {
 
@@ -80,7 +94,6 @@
                     if (campo[r][c].mina == true) {
 
                         campo[r][c].aperta = true;
-                        //$('.cella[data-row=' + r + '][data-col=' + c + ']').html('<i class="fa fa-bomb"></i>')
                         $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("mina");
 
                     }
@@ -91,16 +104,50 @@
 
         }
 
+        function gestisciBandiera(e) {
+
+            e.preventDefault();
+            if (gioco == true) {
+
+                //converto gli attributi di tipo stringa in un valore intero
+                let r = parseInt($(this).attr("data-row"));
+                let c = parseInt($(this).attr("data-col"));
+
+                if (campo[r][c].flag == false) {
+
+                    if (bandiere < mine) {
+
+                        bandiere++;
+                        aggiornaStat();
+                        campo[r][c].flag = true;
+                        $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("flag");
+
+                    }
+                }
+                else if (campo[r][c].flag == true) {
+
+                    bandiere--;
+                    aggiornaStat();
+                    campo[r][c].flag = false;
+                    $('.cella[data-row=' + r + '][data-col=' + c + ']').removeClass("flag");
+                }
+            }
+
+        }
+
         function controlla(r, c) {
 
+            //se la cella è già stata aperta non fa niente
             if (campo[r][c].aperta == true) {
                 return true;
             }
 
+            //apre la cella cliccata se non è già stata aperta
             campo[r][c].aperta = true;
             $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("aperta");
-            cAperte++;
+            celleAperte++;
 
+            //se clicco su una cella vuota
             if ((campo[r][c].mina == false) && (campo[r][c].cont == 0)) {
 
                 for (let dr = r - 1; dr <= r + 1; dr++) {
@@ -118,6 +165,7 @@
                 }
             }
 
+            //se clicco su una cella adiacente a una mina
             if ((campo[r][c].mina == false) && (campo[r][c].cont > 0)) {
                 $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("aperta");
 
@@ -128,9 +176,10 @@
                 }
             }
 
+            //se clicco su una mina
             if (campo[r][c].mina == true) {
                 gioco = false;
-                scopriMine();
+                apriMine();
                 alert("hai perso");
             }
 
@@ -141,18 +190,20 @@
 
 
             generaCampo();
+            aggiornaStat();
 
 
-            //quando clicco su una cella
+            //quando clicco su una cella con il tasto sinistro
             $('.cella').click(function () {
 
                 if (gioco == true) {
 
-                    var r = parseInt($(this).attr("data-row"));
-                    var c = parseInt($(this).attr("data-col"));
+                    //converto gli attributi di tipo stringa in un valore intero
+                    let r = parseInt($(this).attr("data-row"));
+                    let c = parseInt($(this).attr("data-col"));
+
 
                     if ((gioco == true) && (campo[r][c].flag == false)) {
-
 
                         controlla(r, c);
 
@@ -165,46 +216,8 @@
 
             });
 
-
-            $('.cella').bind('contextmenu', function (e) {
-
-
-                e.preventDefault();
-                if (bandiere < mine) {
-
-
-                    
-                    var r = parseInt($(this).attr("data-row"));
-                    var c = parseInt($(this).attr("data-col"));
-
-                    if ((gioco == true) && (campo[r][c].aperta == false) && (campo[r][c].flag == false)) {
-
-                        bandiere++;
-                        campo[r][c].flag = true;
-                        $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("flag");
-
-                    }
-
-                    
-                }
-
-
-            });
-
-            $('.flag').bind('contextmenu', function (e) {
-
-                alert("ciao");
-                e.preventDefault();
-                var r = parseInt($(this).attr("data-row"));
-                var c = parseInt($(this).attr("data-col"));
-
-                campo[r][c].flag = false;
-                $('.cella[data-row=' + r + '][data-col=' + c + ']').removeClass("flag");
-                $('.cella[data-row=' + r + '][data-col=' + c + ']').addClass("cella");
-
-            });
-
-
+            //quando clicco su una cella con il tasto destro
+            $(".cella").bind("contextmenu", gestisciBandiera);
 
         });
 
@@ -218,13 +231,21 @@
 <body>
 
     <br>
-    <h1>CAMPO MINATO</h1>
+    <h1 style="margin-left: 10%;">CAMPO MINATO</h1>
+
+    <div id="partita">
+
+        <p id="mine-left"></p>
+    </div>
 
     <div id="griglia"></div>
 
-    <button onclick="scopriMine();">scopri</button>
+    <br>
+    <button onclick="apriMine();">scopri</button>
+    <button onclick="restart()">restart</button>
 
-    <a href="../finestra_teoria.html"><img src="../img/freccia.png" style="width:100px;height:100px;"></a>
+
+
 
 </body>
 
