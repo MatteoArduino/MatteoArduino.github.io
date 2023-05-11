@@ -18,23 +18,34 @@
             let checkbox = document.createElement("input");
             checkbox.type = "checkbox";
             let label = document.createElement("label");
-            label.innerText = newItem.value;
-            
+            label.innerText = newItem.value + "   ";
+            let button = document.createElement("button");
+            button.innerText = "del";
+            button.id = "del-button";
+            button.onclick =deleteTask;
+
+            li.appendChild(button)
             li.appendChild(checkbox);
             li.appendChild(label);
+
             itemList.appendChild(li);
             newItem.value = "";
         };
 
-        
+
 
         function clearAll() {
 
             let btnDeleteAll = document.getElementById('clear-button');
             let list = document.getElementById('item-list');
 
-            list.innerHTML="";
+            list.innerHTML = "";
         };
+
+        function deleteTask() {
+            let listItem = this.parentNode;
+            listItem.remove();
+        }
 
     </script>
 
