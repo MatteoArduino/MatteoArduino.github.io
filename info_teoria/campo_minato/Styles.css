@@ -3,8 +3,12 @@
 	width: auto;
 	height: auto;
 	align-items: center;
-	
-	
+		
+}
+
+#partita {
+
+	margin-left: 14%;
 }
 
 .cella {
@@ -21,12 +25,6 @@
 
 }
 
-.cella i {
-	position: absolute;
-	transform: translate(50%, -50%);
-	top: 50%;
-	right: 50%;
-}
 
 .cella:hover {
 	background-color: #aaa;
@@ -54,7 +52,7 @@
 
 .mina {
 	
-	background-image: url("img/mina.png");
+	background-image: url("/img/mina.png");
 	
 }
 
@@ -62,5 +60,12 @@
 
 	background-image: url("img/flag.png");
 }
+
+p {
+
+	font-size: larger;
+}
+
+
 
 
